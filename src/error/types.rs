@@ -221,6 +221,19 @@ pub enum BcclError {
         #[help]
         suggestion: String,
     },
+
+    #[error("Function argument error: {message}")]
+    #[diagnostic(
+        code(bccl::runtime::function_argument_error)
+    )]
+    FunctionArgumentError {
+        message: String,
+        function_name: String,
+        #[label("function call")]
+        span: SourceSpan,
+        #[help]
+        suggestion: String,
+    },
 }
 
 pub type BcclResult<T> = Result<T, BcclError>;

@@ -2,6 +2,12 @@ use std::io::{self, Write};
 use bccl::{Lexer, Parser, Evaluator, ErrorContext};
 use miette::{IntoDiagnostic, Result, GraphicalReportHandler, GraphicalTheme};
 
+fn strip_ansi_codes(input: &str) -> String {
+    // Remove ANSI escape sequences for consistent output
+    let re = regex::Regex::new(r"\x1b\[[0-9;]*m").unwrap();
+    re.replace_all(input, "").to_string()
+}
+
 fn main() -> Result<()> {
     println!("BCCL Interpreter v0.2.0 - Enhanced Error Diagnostics");
     println!("Type expressions and assignments. Use Ctrl+C to exit.\n");
@@ -58,12 +64,23 @@ fn main() -> Result<()> {
                 if let Err(error) = evaluate_input(input, &mut evaluator) {
                     // Use miette to display rich error diagnostics with proper formatting
                     let report = miette::Report::new(error).with_source_code(context.source);
-                    let handler = GraphicalReportHandler::new_themed(GraphicalTheme::unicode());
+                    
+                    // Configure miette for consistent output regardless of execution context
+                    // Always use ASCII theme for consistent display across different execution contexts
+                    let theme = GraphicalTheme::ascii();
+                    
+                    let handler = GraphicalReportHandler::new_themed(theme);
                     let mut output = String::new();
-                    if handler.render_report(&mut output, report.as_ref()).is_ok() {
-                        eprintln!("{}", output);
-                    } else {
-                        eprintln!("{}", report);
+                    match handler.render_report(&mut output, report.as_ref()) {
+                        Ok(()) => {
+                            // Strip ANSI color codes for consistent output
+                            let clean_output = strip_ansi_codes(&output);
+                            eprint!("{}", clean_output);
+                        }
+                        Err(_) => {
+                            // Simple fallback that should always work
+                            eprintln!("{}", report);
+                        }
                     }
                 }
             }

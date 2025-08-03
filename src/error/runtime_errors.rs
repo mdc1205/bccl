@@ -88,7 +88,18 @@ impl BcclError {
         }
     }
 
-    /// Create a function argument type error
+    /// Create a function argument type error with proper span and value information
+    pub fn function_argument_type_error_with_span(function_name: &str, arg_number: usize, expected_type: &str, actual_type: &str, actual_value: &str, span: Span) -> Self {
+        Self::FunctionArgumentTypeError {
+            function_name: function_name.to_string(),
+            arg_number,
+            expected_type: expected_type.to_string(),
+            actual_type: format!("{} (value: {})", actual_type, actual_value),
+            span: span.into(),
+        }
+    }
+
+    /// Create a function argument type error (legacy - for backward compatibility)
     pub fn function_argument_type_error(function_name: &str, arg_number: usize, expected_type: &str, actual_type: &str) -> Self {
         Self::FunctionArgumentTypeError {
             function_name: function_name.to_string(),
@@ -190,6 +201,42 @@ impl BcclError {
             operation: operation.to_string(),
             span: span.into(),
             suggestion,
+        }
+    }
+
+    /// Create a duplicate parameter error
+    pub fn duplicate_parameter(function_name: &str, parameter_name: &str, span: Span) -> Self {
+        Self::FunctionArgumentError {
+            message: format!("Parameter '{}' specified multiple times in call to function '{}'", parameter_name, function_name),
+            function_name: function_name.to_string(),
+            span: span.into(),
+            suggestion: format!("Remove the duplicate '{}' parameter. Each parameter can only be specified once.", parameter_name),
+        }
+    }
+
+    /// Create an unknown parameter error
+    pub fn unknown_parameter(function_name: &str, parameter_name: &str, span: Span, valid_params: &[String]) -> Self {
+        let suggestion = if valid_params.is_empty() {
+            format!("Function '{}' takes no parameters", function_name)
+        } else {
+            format!("Valid parameters for '{}' are: {}", function_name, valid_params.join(", "))
+        };
+        
+        Self::FunctionArgumentError {
+            message: format!("Unknown parameter '{}' in call to function '{}'", parameter_name, function_name),
+            function_name: function_name.to_string(),
+            span: span.into(),
+            suggestion,
+        }
+    }
+
+    /// Create a missing parameter error
+    pub fn missing_parameter(function_name: &str, parameter_name: &str, span: Span) -> Self {
+        Self::FunctionArgumentError {
+            message: format!("Missing required parameter '{}' in call to function '{}'", parameter_name, function_name),
+            function_name: function_name.to_string(),
+            span: span.into(),
+            suggestion: format!("Provide a value for parameter '{}' either positionally or using '{} = value'", parameter_name, parameter_name),
         }
     }
 }

@@ -89,11 +89,19 @@ fn test_function_with_wrong_args() {
     let result = evaluator.evaluate_program(&program);
     assert!(result.is_err());
     
-    if let Err(BcclError::WrongArgumentCount { function_name, expected, actual, .. }) = result {
-        assert_eq!(function_name, "max");
-        assert_eq!(expected, 2);
-        assert_eq!(actual, 1);
-    } else {
-        panic!("Expected WrongArgumentCount error");
+    // With our new function signature system, providing insufficient args
+    // results in a MissingParameter error rather than WrongArgumentCount
+    match result {
+        Err(BcclError::FunctionArgumentError { function_name, .. }) => {
+            assert_eq!(function_name, "max");
+        }
+        Err(BcclError::WrongArgumentCount { function_name, expected, actual, .. }) => {
+            assert_eq!(function_name, "max");
+            assert_eq!(expected, 2);
+            assert_eq!(actual, 1);
+        }
+        other => {
+            panic!("Expected FunctionArgumentError or WrongArgumentCount error, got: {:?}", other);
+        }
     }
 }

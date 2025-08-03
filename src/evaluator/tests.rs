@@ -351,8 +351,8 @@ mod tests {
             _ => panic!("Expected Number value"),
         }
 
-        // Test kwargs with min function
-        let result = evaluate_from_str("min(x=3, y=7)").unwrap().unwrap();
+        // Test kwargs with min function using correct parameter names
+        let result = evaluate_from_str("min(a=3, b=7)").unwrap().unwrap();
         match result {
             Value::Number(n) => assert_eq!(n, 3.0),
             _ => panic!("Expected Number value"),

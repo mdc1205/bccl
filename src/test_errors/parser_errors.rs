@@ -136,3 +136,23 @@ fn test_kwargs_positional_after_keyword() {
         other => panic!("Expected UnexpectedToken for positional arg after kwargs, got: {:?}", other),
     }
 }
+
+#[test]
+fn test_kwargs_unknown_parameter() {
+    // Test that using wrong parameter names in kwargs is rejected
+    let mut lexer = Lexer::new("max(x=5, y=10)");
+    let tokens = lexer.tokenize().unwrap();
+    let mut parser = Parser::new(tokens);
+    let program = parser.parse().unwrap();
+    
+    let mut evaluator = crate::Evaluator::new();
+    let result = evaluator.evaluate_program(&program);
+    
+    assert!(result.is_err());
+    match result {
+        Err(BcclError::FunctionArgumentError { .. }) => {
+            // Expected - using wrong parameter names should fail
+        }
+        other => panic!("Expected FunctionArgumentError for wrong parameter names, got: {:?}", other),
+    }
+}
