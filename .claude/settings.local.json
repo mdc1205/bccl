@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo test:*)",
+      "Bash(cargo:*)",
+      "Bash(mv:*)",
+      "Bash(del C:Usersconnobcclsrcparser.rs)",
+      "Bash(ren:*)",
+      "Bash(rm:*)",
+      "Bash(rustc:*)",
+      "Bash(./debug_error.exe)",
+      "Bash(./target/debug/bccl.exe)",
+      "Bash(find:*)",
+      "Bash(mkdir:*)",
+      "Bash(grep:*)",
+      "Bash(del \"C:\\Users\\conno\\bccl\\src\\parser.rs\")"
+    ],
+    "deny": []
+  }
+}

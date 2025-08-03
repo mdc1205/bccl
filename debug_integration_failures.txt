@@ -1,0 +1,19 @@
+# Test the inventory scenario step by step
+inventory = {"items": [{"name": "sword", "quantity": 5, "price": 100}, {"name": "shield", "quantity": 3, "price": 75}, {"name": "potion", "quantity": 12, "price": 25}], "currency": 500}
+sword = inventory["items"][0]
+shield = inventory["items"][1]
+sword_cost = sword["quantity"] * sword["price"]
+shield_cost = shield["quantity"] * shield["price"]
+total_cost = sword_cost + shield_cost
+can_afford = total_cost <= inventory["currency"]
+
+# Test the boolean logic scenario step by step
+values = [45, 67, 23, 89, 12]
+thresholds = {"min": 20, "max": 80}
+first_val = values[0]
+last_val = values[4]
+highest = max(first_val, values[3])
+within_range = first_val >= thresholds["min"] and first_val <= thresholds["max"]
+exceeds_max = highest > thresholds["max"]
+valid_minimum = last_val >= thresholds["min"]
+final_check = within_range and exceeds_max and valid_minimum

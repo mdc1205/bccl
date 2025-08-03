@@ -1,0 +1,6 @@
+max(5, 10)
+max(3.14, 2)
+min(5, 10)
+min(3.14, 2)
+result = max(15, 7)
+result

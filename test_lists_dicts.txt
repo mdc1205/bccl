@@ -1,0 +1,19 @@
+# Test Lists
+[1, 2, 3]
+[1, 2, 3][0]
+[1, 2, 3][1]
+nums = [10, 20, 30]
+nums[2]
+
+# Test Dictionaries
+{"name": "John", "age": 30}
+person = {"name": "Alice", "city": "NYC"}
+person["name"]
+person["city"]
+
+# Test mixed
+items = [1, "hello", true]
+items[1]
+
+# Test functions with lists
+max(5, 10)
